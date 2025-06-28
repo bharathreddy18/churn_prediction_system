@@ -10,8 +10,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Load all pickle files
 model = joblib.load(os.path.join(BASE_DIR, "model.pkl"))
-scaler = joblib.load(os.path.join(BASE_DIR, "scaler.pkl"))
-feature_names = joblib.load(os.path.join(BASE_DIR, "feature_names.pkl"))
 
 # Initialize FastAPI app
 app = FastAPI(title="Customer Churn Prediction API")
@@ -47,20 +45,10 @@ def root():
 def predict_churn(data: CustomerData):
     input_df = pd.DataFrame([data.dict()])
 
-    input_df_encoded = pd.get_dummies(input_df)
-
-    for col in feature_names:
-        if col not in input_df_encoded.columns:
-            input_df_encoded[col] = 0
-
-    input_df_encoded = input_df_encoded[feature_names]
-
-    input_scaled = scaler.transform(input_df_encoded)
-
-    prediction = model.predict(input_scaled)[0]
-    probability = model.predict_proba(input_scaled)[0][1]
+    y_proba = model.predict_proba(input_df)[0][1]
+    y_pred = int(y_proba > 0.55)
 
     return {
-        "churn prediction": int(prediction),
-        "churn probability": round(float(probability), 3)
+        "churn prediction": y_pred,
+        "churn probability": round(float(y_proba), 3)
     }

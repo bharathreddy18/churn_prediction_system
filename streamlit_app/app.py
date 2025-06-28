@@ -29,7 +29,7 @@ with st.form("churn_form"):
     TotalCharges = st.number_input("Total Charges", min_value=0.0, value=346.45)
 
     submitted = st.form_submit_button("Predict Churn")
-print(submitted)
+# print(submitted)
 if submitted:
     FASTAPI_URL = "https://churn-prediction-system-naqq.onrender.com/predict"
 

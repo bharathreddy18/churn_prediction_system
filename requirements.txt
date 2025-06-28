@@ -9,3 +9,4 @@ python-multipart
 jupyter
 imbalanced-learn
 streamlit
+optuna
